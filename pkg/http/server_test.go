@@ -4,20 +4,21 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewEncrypterServeMux(t *testing.T) {
 	var logBuff bytes.Buffer
 	logger := log.New(&logBuff, "", 0)
 	srb := storeRequestBody{
-		Id:[]byte("qwert"),
-		Payload:[]byte("yuiop"),
+		Id:      "qwert",
+		Payload: "yuiop",
 	}
 	srv := httptest.NewServer(NewEncrypterServeMux(logger))
 
@@ -43,8 +44,8 @@ func TestNewEncrypterServeMux(t *testing.T) {
 	var payload []byte
 	t.Run("retrieve", func(t *testing.T) {
 		rrb := retrieveRequestBody{
-			Id:srb.Id,
-			Key:key,
+			Id:  srb.Id,
+			Key: string(key),
 		}
 
 		rb, err := json.Marshal(rrb)
@@ -63,6 +64,6 @@ func TestNewEncrypterServeMux(t *testing.T) {
 		payload, err = ioutil.ReadAll(res.Body)
 		assert.NoError(t, err)
 	})
-	
-	assert.Equal(t, srb.Payload, payload, logBuff.String())
+
+	assert.Equal(t, srb.Payload, string(payload), logBuff.String())
 }
