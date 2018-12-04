@@ -44,3 +44,35 @@ func (s *server) Store(w http.ResponseWriter, r *http.Request) {
 		s.logger.Print(errors.Wrap(err, "writing key response"))
 	}
 }
+
+type retrieveRequestBody struct {
+	Id []byte `json:"id"`
+	Key []byte `json:"key"`
+}
+
+func (s *server) Retrieve(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
+	}
+	var rr retrieveRequestBody
+	err := json.NewDecoder(r.Body).Decode(&rr)
+	if err != nil {
+		s.logger.Print(errors.Wrap(err, "decoding retrieve request body"))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	P, err := s.store.Retrieve(rr.Id, rr.Key)
+	if err != nil {
+		s.logger.Print(errors.Wrap(err, "storing retrieve request payload"))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write(P)
+	if err != nil {
+		s.logger.Print(errors.Wrap(err, "writing payload response"))
+	}
+}
