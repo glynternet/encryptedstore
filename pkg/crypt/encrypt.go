@@ -22,6 +22,8 @@ func(eFn EncryptorFn) Encrypt(payload []byte)   (encrypted, key []byte, err erro
 	return eFn(payload)
 }
 
+// Encrypt encrypts a payload using AES , returning the encrypted payload with
+// the key that was used to encrypt it.
 func Encrypt(payload []byte) (encrypted, key []byte, err error) {
 	k, err := generateNewKey()
 	if err != nil {
