@@ -15,6 +15,7 @@ type server struct {
 	logger *log.Logger
 }
 
+// NewEncrypterServeMux creates a ServeMux that uses an encrypted storage backend
 func NewEncrypterServeMux(logger *log.Logger) *http.ServeMux {
 	s := server{
 		logger: logger,
