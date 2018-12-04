@@ -1,21 +1,23 @@
 package http
 
 import (
+	"encoding/base64"
 	"encoding/json"
-	"github.com/glynternet/encryptedstore/pkg/storage"
-	"github.com/pkg/errors"
 	"log"
 	"net/http"
+
+	"github.com/glynternet/encryptedstore/pkg/storage"
+	"github.com/pkg/errors"
 )
 
 type server struct {
-	store storage.Encrypted
+	store  storage.Encrypted
 	logger *log.Logger
 }
 
 func NewEncrypterServeMux(logger *log.Logger) *http.ServeMux {
 	s := server{
-		logger:logger,
+		logger: logger,
 	}
 	m := http.NewServeMux()
 	m.Handle("/store", http.HandlerFunc(s.Store))
@@ -24,8 +26,8 @@ func NewEncrypterServeMux(logger *log.Logger) *http.ServeMux {
 }
 
 type storeRequestBody struct {
-	Id []byte `json:"id"`
-	Payload []byte `json:"payload"`
+	Id      string `json:"id"`
+	Payload string `json:"payload"`
 }
 
 func (s *server) Store(w http.ResponseWriter, r *http.Request) {
@@ -41,23 +43,25 @@ func (s *server) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	k, err := s.store.Store(sr.Id, sr.Payload)
+	k, err := s.store.Store([]byte(sr.Id), []byte(sr.Payload))
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "storing store request payload"))
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
+	encoded := base64.StdEncoding.EncodeToString(k)
+
 	w.WriteHeader(http.StatusOK)
-	_, err = w.Write(k)
+	_, err = w.Write([]byte(encoded))
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "writing key response"))
 	}
 }
 
 type retrieveRequestBody struct {
-	Id []byte `json:"id"`
-	Key []byte `json:"key"`
+	Id  string `json:"id"`
+	Key string `json:"key"`
 }
 
 func (s *server) Retrieve(w http.ResponseWriter, r *http.Request) {
@@ -73,7 +77,14 @@ func (s *server) Retrieve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, err := s.store.Retrieve(rr.Id, rr.Key)
+	decoded, err := base64.StdEncoding.DecodeString(string(rr.Key))
+	if err != nil {
+		s.logger.Print(errors.Wrap(err, "base64 decoding retrieve key"))
+		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
+		return
+	}
+
+	p, err := s.store.Retrieve([]byte(rr.Id), decoded)
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "retrieving retrieve request payload"))
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
