@@ -26,7 +26,7 @@ func NewEncrypterServeMux(logger *log.Logger) *http.ServeMux {
 }
 
 type storeRequestBody struct {
-	Id      string `json:"id"`
+	ID      string `json:"id"`
 	Payload string `json:"payload"`
 }
 
@@ -43,7 +43,7 @@ func (s *server) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	k, err := s.store.Store([]byte(sr.Id), []byte(sr.Payload))
+	k, err := s.store.Store([]byte(sr.ID), []byte(sr.Payload))
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "storing store request payload"))
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
@@ -60,7 +60,7 @@ func (s *server) Store(w http.ResponseWriter, r *http.Request) {
 }
 
 type retrieveRequestBody struct {
-	Id  string `json:"id"`
+	ID  string `json:"id"`
 	Key string `json:"key"`
 }
 
@@ -84,7 +84,7 @@ func (s *server) Retrieve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	p, err := s.store.Retrieve([]byte(rr.Id), decoded)
+	p, err := s.store.Retrieve([]byte(rr.ID), decoded)
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "retrieving retrieve request payload"))
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
