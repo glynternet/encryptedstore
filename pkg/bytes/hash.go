@@ -9,4 +9,3 @@ type hash string
 func newHash(id []byte) hash {
 	return hash(string(id))
 }
-

@@ -2,6 +2,7 @@ package crypt
 
 import (
 	"crypto/rand"
+
 	"github.com/pkg/errors"
 )
 
@@ -13,4 +14,3 @@ func generateNewKey() ([]byte, error) {
 	}
 	return key, nil
 }
-

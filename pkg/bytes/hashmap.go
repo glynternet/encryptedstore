@@ -11,7 +11,6 @@ type HashMap struct {
 	lock   sync.RWMutex
 }
 
-
 // Store will insert or update any payload
 // Task note: We could return more info here to say whether it existed previously
 func (lm *HashMap) Store(key, payload []byte) {

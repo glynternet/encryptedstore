@@ -2,17 +2,17 @@ package storage
 
 import (
 	"fmt"
+
 	"github.com/glynternet/encryptedstore/pkg/bytes"
 	"github.com/glynternet/encryptedstore/pkg/crypt"
 	"github.com/pkg/errors"
 )
 
-
 // Encrypted is a storage mechanism that will encrypt your payloads for storage
 type Encrypted struct {
 	encryptedStore bytes.HashMap
-	encryptor crypt.Encryptor
-	decryptor crypt.Decryptor
+	encryptor      crypt.Encryptor
+	decryptor      crypt.Decryptor
 }
 
 func (s *Encrypted) Store(id, payload []byte) (aesKey []byte, err error) {

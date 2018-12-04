@@ -1,10 +1,11 @@
 package storage_test
 
 import (
+	"testing"
+
 	"github.com/glynternet/encryptedstore/pkg/client"
 	"github.com/glynternet/encryptedstore/pkg/storage"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 // ensure that Encrypted satisfies the task's required interface
@@ -31,7 +32,7 @@ func TestStoreRetrieve(t *testing.T) {
 	t.Run("retrieve with valid key", func(t *testing.T) {
 		decrypted, err := e.Retrieve(id, key)
 		assert.NoError(t, err)
-		assert.Equal(t, payload,decrypted)
+		assert.Equal(t, payload, decrypted)
 	})
 
 	t.Run("retrieve with non-existant id", func(t *testing.T) {

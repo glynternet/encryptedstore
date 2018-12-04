@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-	"github.com/pkg/errors"
 	"io"
+
+	"github.com/pkg/errors"
 )
 
 // Encryptor is used to enecrypt a payload, returning the encrypted payload and key
@@ -18,7 +19,7 @@ type Encryptor interface {
 type EncryptorFn func(payload []byte) (encrypted, key []byte, err error)
 
 // Encrypt ensures that EncryptorFn satistfies the Encryptor interface
-func(eFn EncryptorFn) Encrypt(payload []byte)   (encrypted, key []byte, err error) {
+func (eFn EncryptorFn) Encrypt(payload []byte) (encrypted, key []byte, err error) {
 	return eFn(payload)
 }
 
