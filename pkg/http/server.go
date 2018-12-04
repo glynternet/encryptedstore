@@ -78,7 +78,7 @@ func (s *server) Retrieve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	decoded, err := base64.StdEncoding.DecodeString(string(rr.Key))
+	decoded, err := base64.StdEncoding.DecodeString(rr.Key)
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "base64 decoding retrieve key"))
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
