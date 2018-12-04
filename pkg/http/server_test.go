@@ -17,7 +17,7 @@ func TestNewEncrypterServeMux(t *testing.T) {
 	var logBuff bytes.Buffer
 	logger := log.New(&logBuff, "", 0)
 	srb := storeRequestBody{
-		Id:      "qwert",
+		ID:      "qwert",
 		Payload: "yuiop",
 	}
 	srv := httptest.NewServer(NewEncrypterServeMux(logger))
@@ -44,7 +44,7 @@ func TestNewEncrypterServeMux(t *testing.T) {
 	var payload []byte
 	t.Run("retrieve", func(t *testing.T) {
 		rrb := retrieveRequestBody{
-			Id:  srb.Id,
+			ID:  srb.ID,
 			Key: string(key),
 		}
 

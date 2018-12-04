@@ -15,6 +15,7 @@ func main() {
 		logger.Println(err)
 	}
 }
+
 func run(logger *log.Logger, addr string) error {
 	logger.Printf("serving at %s", addr)
 	return http.ListenAndServe(addr, ehttp.NewEncrypterServeMux(logger))
