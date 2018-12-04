@@ -13,6 +13,16 @@ type server struct {
 	logger *log.Logger
 }
 
+func NewEncrypterServeMux(logger *log.Logger) *http.ServeMux {
+	s := server{
+		logger:logger,
+	}
+	m := http.NewServeMux()
+	m.Handle("/store", http.HandlerFunc(s.Store))
+	m.Handle("/retrieve", http.HandlerFunc(s.Retrieve))
+	return m
+}
+
 type storeRequestBody struct {
 	Id []byte `json:"id"`
 	Payload []byte `json:"payload"`
@@ -63,15 +73,15 @@ func (s *server) Retrieve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	P, err := s.store.Retrieve(rr.Id, rr.Key)
+	p, err := s.store.Retrieve(rr.Id, rr.Key)
 	if err != nil {
-		s.logger.Print(errors.Wrap(err, "storing retrieve request payload"))
+		s.logger.Print(errors.Wrap(err, "retrieving retrieve request payload"))
 		http.Error(w, http.StatusText(http.StatusBadRequest), http.StatusBadRequest)
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	_, err = w.Write(P)
+	_, err = w.Write(p)
 	if err != nil {
 		s.logger.Print(errors.Wrap(err, "writing payload response"))
 	}
